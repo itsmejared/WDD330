@@ -10,11 +10,14 @@ export default class Cart {
   }
 
   init() {
-    this.cartItems = getLocalStorage("so-cart") || [];
+    const localData = getLocalStorage("so-cart");
+    this.cartItems = Array.isArray(localData) ? localData : [];
     this.renderCartContents();
   }
 
   renderCartContents() {
+    if (!this.productList) return;
+
     if (this.cartItems.length > 0) {
       const htmlItems = this.cartItems.map((item) =>
         this.cartItemTemplate(item),
@@ -24,32 +27,37 @@ export default class Cart {
       this.addRemoveListeners();
     } else {
       this.productList.innerHTML = "<p>Your cart is empty.</p>";
-      this.cartFooter.classList.add("hide");
+      if (this.cartFooter) {
+        this.cartFooter.classList.add("hide");
+      }
     }
   }
 
   cartItemTemplate(item) {
+    const colorName = item.Colors && item.Colors[0] ? item.Colors[0].ColorName : "";
     return `<li class="cart-card divider">
-       <a href="#" class="cart-card__image">
-        <img
-          src="${item.Image}"
-          alt="${item.Name}"
-        />
-      </a>
-      <a href="#">
-        <h2 class="card__name">${item.Name}</h2>
-      </a>
-      <p class="cart-card__color">${item.Colors[0].ColorName}</p>
-      <p class="cart-card__quantity">qty: 1</p>
-      <p class="cart-card__price">$${item.FinalPrice}</p>
-      <span class="cart-remove-item" data-id="${item.Id}">X</span>
-    </li>
-    `;
+        <a href="#" class="cart-card__image">
+         <img
+           src="${item.Image}"
+           alt="${item.Name}"
+         />
+       </a>
+       <a href="#">
+         <h2 class="card__name">${item.Name}</h2>
+       </a>
+       <p class="cart-card__color">${colorName}</p>
+       <p class="cart-card__quantity">qty: 1</p>
+       <p class="cart-card__price">$${item.FinalPrice}</p>
+       <span class="cart-remove-item" data-id="${item.Id}">X</span>
+     </li>
+     `;
   }
 
   renderCartTotal() {
+    if (!this.cartFooter || !this.cartTotal) return;
+
     const total = this.cartItems.reduce((sum, item) => {
-      return sum + item.FinalPrice;
+      return sum + (item.FinalPrice || 0);
     }, 0);
     this.cartFooter.classList.remove("hide");
     this.cartTotal.innerHTML = `Total: $${total.toFixed(2)}`;
