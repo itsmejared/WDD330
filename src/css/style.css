@@ -131,6 +131,22 @@ button {
   fill: gray;
 }
 
+/* Cart counter badge */
+.cart-count {
+  position: absolute;
+  top: 0;
+  right: -10px;
+  background-color: #f4b860;
+  color: purple;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
 /* End cart icon styles */
 
 .mission {
