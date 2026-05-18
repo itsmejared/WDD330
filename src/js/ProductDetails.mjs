@@ -34,7 +34,21 @@ function productDetailsTemplate(product) {
   productImage.src = product.Image;
   productImage.alt = product.NameWithoutBrand;
 
-  document.getElementById("productPrice").textContent = product.FinalPrice;
+  const priceElement = document.getElementById("productPrice");
+  const originalPrice = product.SuggestedRetailPrice;
+  const finalPrice = product.FinalPrice;
+
+  if (finalPrice < originalPrice) {
+    const discountPercent = Math.round(((originalPrice - finalPrice) / originalPrice) * 100);
+    priceElement.innerHTML = `
+      <span class="original-price">$${originalPrice.toFixed(2)}</span>
+      <span class="final-price">$${finalPrice.toFixed(2)}</span>
+      <span class="discount-badge">-${discountPercent}% OFF</span>
+    `;
+  } else {
+    priceElement.textContent = `$${finalPrice.toFixed(2)}`;
+  }
+
   document.getElementById("productColor").textContent =
     product.Colors[0].ColorName;
   document.getElementById("productDesc").innerHTML =

@@ -75,7 +75,6 @@ p {
   font-size: var(--small-font);
   width: 110px;
   height: 80px;
-
   flex-direction: column;
   align-items: flex-end;
   box-shadow: 1px 1px 4px var(--light-grey);
@@ -147,6 +146,7 @@ button {
   font-size: 0.8rem;
   font-weight: bold;
 }
+
 /* End cart icon styles */
 
 .mission {
@@ -168,15 +168,14 @@ button {
 }
 
 .products {
-  margin-top: 2rem;
-  padding: 1rem;
+  margin: 2rem auto;
 }
-
 .product-list {
-  display: flex;
-  flex-flow: row wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;margin:1.1rem 0; 
   list-style-type: none;
-  justify-content: center;
+  width: 100%;
 }
 
 .product-list a {
@@ -186,11 +185,11 @@ button {
 
 /* Styles for product lists */
 .product-card {
-  flex: 1 1 45%;
-  margin: 0.25em;
-  padding: 0.5em;
+  flex: 1 2 5%;
+  margin: 0;
+  padding: 1.5rem;
   border: 1px solid var(--light-grey);
-  max-width: 250px;
+  border-radius: 8px;
 }
 
 .product-card h2,
@@ -212,13 +211,36 @@ button {
 .product-detail {
   padding: 1em;
   max-width: 500px;
-  margin: auto;
+  margin:2px auto;
 }
 
 .product-detail img {
   width: 100%;
 }
+/*discount*/
 
+.original-price {
+  text-decoration: line-through;
+  color: var(--light-grey);
+  margin-right: 8px;
+  font-size: var(--small-font);
+}
+
+.final-price {
+  font-weight: bold;
+  color: var(--dark-grey);
+}
+
+.discount-badge {
+  background-color: var(--tertiary-color);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: var(--small-font);
+  margin-left: 8px;
+  vertical-align: middle;
+}
 /* Start cart list card styles */
 .cart-card {
   display: grid;
