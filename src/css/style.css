@@ -222,7 +222,7 @@ button {
 /* Start cart list card styles */
 .cart-card {
   display: grid;
-  grid-template-columns: 25% auto 15%;
+  grid-template-columns: 25% auto 15% 30px;
   font-size: var(--small-font);
   /* max-height: 120px; */
   align-items: center;
@@ -257,6 +257,14 @@ button {
   grid-column: 3;
 }
 
+.cart-remove-item {
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: red;
+  justify-self: center;
+}
+
 .hide {
   display: none;
 }
@@ -281,7 +289,7 @@ button {
 
   .cart-card {
     font-size: inherit;
-    grid-template-columns: 150px auto 15%;
+    grid-template-columns: 150px auto 15% 30px;
   }
 }
 
