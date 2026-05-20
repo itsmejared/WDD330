@@ -186,11 +186,12 @@ button {
 
 /* Styles for product lists */
 .product-card {
-  flex: 1 1 45%;
+  flex: 1 2 45%;
   margin: 0.25em;
   padding: 0.5em;
   border: 1px solid var(--light-grey);
   max-width: 250px;
+    border-radius: 8px;
 }
 
 .product-card h2,
@@ -217,6 +218,37 @@ button {
 
 .product-detail img {
   width: 100%;
+}
+
+/*discount*/
+
+.product-card__price {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.original-price {
+  text-decoration: line-through;
+  color: var(--light-grey);
+  font-size: 0.9rem;
+}
+
+.final-price {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--dark-grey);
+}
+
+.discount-badge {
+  background-color: var(--tertiary-color);
+  color: white;
+  padding: 0.2rem 0.45rem;
+  border-radius: 6px;
+  font-size: var(--small-font);;
+  font-weight: 700;
+  line-height: 1;
 }
 
 /* Start cart list card styles */
