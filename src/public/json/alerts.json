@@ -1,0 +1,12 @@
+[
+  {
+    "message": "This is only a test alert for the home page!",
+    "background": "darkblue",
+    "color": "white"
+  },
+  {
+    "message": "Big sales this weekend! Up to 35% off on selected tents.",
+    "background": "#e67e22",
+    "color": "#ffffff"
+  }
+]
