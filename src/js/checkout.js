@@ -1,8 +1,4 @@
 import { loadHeaderFooter } from "./utils.mjs";
 import { updateCartIcon } from "./CartCount.mjs";
-import ShoppingCart from "./ShoppingCart.mjs";
 
 loadHeaderFooter(updateCartIcon);
-
-const shoppingCart = new ShoppingCart();
-shoppingCart.init();
