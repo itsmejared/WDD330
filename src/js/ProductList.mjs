@@ -34,15 +34,46 @@ export default class ProductList {
     this.category = category;
     this.dataSource = dataSource;
     this.listElement = listElement;
+    this.products = [];
   }
   async init() {
-    const list = await this.dataSource.getData(this.category);
-    console.log(list);
-    this.renderList(list);
-    document.querySelector(".title").textContent =
-      this.category.charAt(0).toUpperCase() + this.category.slice(1);
+    const isSearch = window.location.search.includes("search=");
+
+    if (isSearch) {
+      const allCategories = ["tents", "backpacks", "sleeping-bags", "hammocks"];
+      const allProducts = await Promise.all(
+        allCategories.map((cat) => this.dataSource.getData(cat))
+      );
+      this.products = allProducts.flat().filter((product) =>
+        product.Name.toLowerCase().includes(this.category.toLowerCase()) ||
+        product.Brand.Name.toLowerCase().includes(this.category.toLowerCase())
+      );
+      document.querySelector(".title").textContent = `Search Results: ${this.category}`;
+    } else {
+      this.products = await this.dataSource.getData(this.category);
+      document.querySelector(".title").textContent =
+        this.category.charAt(0).toUpperCase() + this.category.slice(1);
+    }
+
+    this.renderList(this.products);
+
+    const sortSelect = document.getElementById("sort-select");
+    if (sortSelect) {
+      sortSelect.addEventListener("change", (e) => {
+        this.sortList(e.target.value);
+      });
+    }
+  }
+  sortList(criteria) {
+    if (criteria === "name") {
+      this.products.sort((a, b) => a.Name.localeCompare(b.Name));
+    } else if (criteria === "price") {
+      this.products.sort((a, b) => a.FinalPrice - b.FinalPrice);
+    }
+    this.renderList(this.products);
   }
   renderList(list) {
+    this.listElement.innerHTML = "";
     renderListWithTemplate(productCardTemplate, this.listElement, list);
   }
 }

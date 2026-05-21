@@ -22,6 +22,7 @@ export default class Cart {
       this.productList.innerHTML = htmlItems.join("");
       this.renderCartTotal();
       this.addRemoveListeners();
+      this.addQuantityListeners();
     } else {
       this.productList.innerHTML = "<p>Your cart is empty.</p>";
       this.cartFooter.classList.add("hide");
@@ -40,7 +41,17 @@ export default class Cart {
         <h2 class="card__name">${item.Name}</h2>
       </a>
       <p class="cart-card__color">${item.Colors[0].ColorName}</p>
-      <p class="cart-card__quantity">qty: 1</p>
+      <div class="cart-card__quantity">
+        <label for="qty-${item.Id}">qty:</label>
+        <input 
+          id="qty-${item.Id}" 
+          type="number" 
+          class="cart-quantity-input" 
+          value="${item.Quantity || 1}" 
+          min="1" 
+          data-id="${item.Id}"
+        />
+      </div>
       <p class="cart-card__price">$${item.FinalPrice}</p>
       <span class="cart-remove-item" data-id="${item.Id}">X</span>
     </li>
@@ -49,7 +60,7 @@ export default class Cart {
 
   renderCartTotal() {
     const total = this.cartItems.reduce((sum, item) => {
-      return sum + item.FinalPrice;
+      return sum + item.FinalPrice * (item.Quantity || 1);
     }, 0);
     this.cartFooter.classList.remove("hide");
     this.cartTotal.innerHTML = `Total: $${total.toFixed(2)}`;
@@ -63,6 +74,29 @@ export default class Cart {
         this.removeItemFromCart(productId);
       });
     });
+  }
+
+  addQuantityListeners() {
+    const quantityInputs = document.querySelectorAll(".cart-quantity-input");
+    quantityInputs.forEach((input) => {
+      input.addEventListener("change", (event) => {
+        const productId = event.target.dataset.id;
+        const newQuantity = parseInt(event.target.value);
+        if (newQuantity > 0) {
+          this.updateQuantity(productId, newQuantity);
+        }
+      });
+    });
+  }
+
+  updateQuantity(productId, newQuantity) {
+    const item = this.cartItems.find((item) => item.Id === productId);
+    if (item) {
+      item.Quantity = newQuantity;
+      localStorage.setItem("so-cart", JSON.stringify(this.cartItems));
+      updateCartIcon();
+      this.renderCartTotal();
+    }
   }
 
   removeItemFromCart(productId) {
