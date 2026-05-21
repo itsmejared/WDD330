@@ -32,7 +32,7 @@ export default class Cart {
     return `<li class="cart-card divider">
        <a href="#" class="cart-card__image">
         <img
-          src="${item.Image}"
+          src="${item.Images.PrimaryMedium}"
           alt="${item.Name}"
         />
       </a>

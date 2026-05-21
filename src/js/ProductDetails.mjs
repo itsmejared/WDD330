@@ -11,7 +11,7 @@ export default class ProductDetails {
     this.product = await this.dataSource.findProductById(this.productId);
     this.renderProductDetails();
     document
-      .getElementById("addToCart")
+      .getElementById("add-to-cart")
       .addEventListener("click", this.addProductToCart.bind(this));
   }
 
@@ -27,14 +27,16 @@ export default class ProductDetails {
 }
 
 function productDetailsTemplate(product) {
-  document.querySelector("h2").textContent = product.Brand.Name;
-  document.querySelector("h3").textContent = product.NameWithoutBrand;
+  document.querySelector("h2").textContent =
+    product.Category.charAt(0).toUpperCase() + product.Category.slice(1);
+  document.querySelector("#p-brand").textContent = product.Brand.Name;
+  document.querySelector("#p-name").textContent = product.NameWithoutBrand;
 
-  const productImage = document.getElementById("productImage");
-  productImage.src = product.Image;
+  const productImage = document.querySelector("#p-image");
+  productImage.src = product.Images.PrimaryExtraLarge;
   productImage.alt = product.NameWithoutBrand;
 
-  const priceElement = document.getElementById("productPrice");
+  const priceElement = document.getElementById("p-price");
   const originalPrice = product.SuggestedRetailPrice;
   const finalPrice = product.FinalPrice;
 
@@ -50,9 +52,9 @@ function productDetailsTemplate(product) {
     priceElement.textContent = `$${finalPrice.toFixed(2)}`;
   }
 
-  document.getElementById("productColor").textContent =
-    product.Colors[0].ColorName;
-  document.getElementById("productDesc").innerHTML =
+  document.querySelector("#p-color").textContent = product.Colors[0].ColorName;
+  document.querySelector("#p-description").innerHTML =
     product.DescriptionHtmlSimple;
-  document.getElementById("addToCart").dataset.id = product.Id;
+
+  document.querySelector("#add-to-cart").dataset.id = product.Id;
 }
