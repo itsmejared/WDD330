@@ -1,24 +1,20 @@
+import { convertToJson } from "./utils.mjs";
+
 export default class Alert {
   constructor(mainElement) {
     this.mainElement = document.querySelector(mainElement);
+    this.path = "../json/alerts.json";
   }
 
   async init() {
-    const alerts = await this.fetchAlertData();
-    if (alerts && alerts.length > 0) {
-      this.renderAlerts(alerts);
-    }
-  }
-
-  async fetchAlertData() {
     try {
-      const response = await fetch("/json/alerts.json");
-      if (!response.ok) {
-        throw new Error("error");
+      const response = await fetch(this.path);
+      const alerts = await convertToJson(response);
+      if (alerts?.length > 0) {
+        this.renderAlerts(alerts);
       }
-      return await response.json();
     } catch (error) {
-      console.error("Can not load :", error);
+      return;
     }
   }
 
@@ -31,12 +27,9 @@ export default class Alert {
       alertParagraph.textContent = alert.message;
       alertParagraph.style.backgroundColor = alert.background;
       alertParagraph.style.color = alert.color;
-      
       alertListSection.appendChild(alertParagraph);
     });
 
-    if (this.mainElement) {
-      this.mainElement.prepend(alertListSection);
-    }
+    this.mainElement?.prepend(alertListSection);
   }
 }

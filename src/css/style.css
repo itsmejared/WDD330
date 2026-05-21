@@ -191,7 +191,7 @@ button {
   padding: 0.5em;
   border: 1px solid var(--light-grey);
   max-width: 250px;
-    border-radius: 8px;
+  border-radius: 8px;
 }
 
 .product-card h2,
@@ -246,7 +246,7 @@ button {
   color: white;
   padding: 0.2rem 0.45rem;
   border-radius: 6px;
-  font-size: var(--small-font);;
+  font-size: var(--small-font);
   font-weight: 700;
   line-height: 1;
 }
