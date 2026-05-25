@@ -16,14 +16,16 @@ export default class ProductDetails {
   }
 
   addProductToCart() {
-    const cartItems = getLocalStorage("so-cart") || [];
-    const existingItem = cartItems.find((item) => item.Id === this.product.Id);
+    const cartItems = getLocalStorage("so-cart") ?? [];
+    const existingItem = cartItems.find(({ Id }) => Id === this.product.Id);
 
     if (existingItem) {
-      existingItem.Quantity = (existingItem.Quantity || 1) + 1;
+      existingItem.Quantity = (existingItem.Quantity ?? 0) + 1;
     } else {
-      this.product.Quantity = 1;
-      cartItems.push(this.product);
+      cartItems.push({
+        ...this.product,
+        Quantity: 1,
+      });
     }
 
     setLocalStorage("so-cart", cartItems);
