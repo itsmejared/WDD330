@@ -42,20 +42,24 @@ export default class ProductList {
     if (isSearch) {
       const allCategories = ["tents", "backpacks", "sleeping-bags", "hammocks"];
       const allProducts = await Promise.all(
-        allCategories.map((cat) => this.dataSource.getData(cat))
+        allCategories.map((cat) => this.dataSource.getData(cat)),
       );
-      this.products = allProducts.flat().filter((product) =>
-        product.Name.toLowerCase().includes(this.category.toLowerCase()) ||
-        product.Brand.Name.toLowerCase().includes(this.category.toLowerCase())
-      );
-      document.querySelector(".title").textContent = `Search Results: ${this.category}`;
+      this.products = allProducts
+        .flat()
+        .filter(
+          (product) =>
+            product.Name.toLowerCase().includes(this.category.toLowerCase()) ||
+            product.Brand.Name.toLowerCase().includes(
+              this.category.toLowerCase(),
+            ),
+        );
+      document.querySelector(".title").textContent =
+        `Search Results: ${this.category}`;
     } else {
       this.products = await this.dataSource.getData(this.category);
       document.querySelector(".title").textContent =
         this.category.charAt(0).toUpperCase() + this.category.slice(1);
     }
-
-    this.renderList(this.products);
 
     const sortSelect = document.getElementById("sort-select");
     if (sortSelect) {
@@ -63,15 +67,36 @@ export default class ProductList {
         this.sortList(e.target.value);
       });
     }
+
+    this.sortList("name-asc");
   }
+
   sortList(criteria) {
-    if (criteria === "name") {
-      this.products.sort((a, b) => a.Name.localeCompare(b.Name));
-    } else if (criteria === "price") {
-      this.products.sort((a, b) => a.FinalPrice - b.FinalPrice);
+    switch (criteria) {
+      case "name-asc":
+        this.products.sort((a, b) =>
+          a.NameWithoutBrand.localeCompare(b.NameWithoutBrand),
+        );
+        break;
+
+      case "name-desc":
+        this.products.sort((a, b) =>
+          b.NameWithoutBrand.localeCompare(a.NameWithoutBrand),
+        );
+        break;
+
+      case "price-asc":
+        this.products.sort((a, b) => a.FinalPrice - b.FinalPrice);
+        break;
+
+      case "price-desc":
+        this.products.sort((a, b) => b.FinalPrice - a.FinalPrice);
+        break;
     }
+
     this.renderList(this.products);
   }
+
   renderList(list) {
     this.listElement.innerHTML = "";
     renderListWithTemplate(productCardTemplate, this.listElement, list);
