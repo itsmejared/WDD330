@@ -53,9 +53,16 @@ function productDetailsTemplate(product) {
   document.querySelector("#p-brand").textContent = product.Brand.Name;
   document.querySelector("#p-name").textContent = product.NameWithoutBrand;
 
-  const productImage = document.querySelector("#p-image");
-  productImage.src = product.Images.PrimaryExtraLarge;
-  productImage.alt = product.NameWithoutBrand;
+  const productImageContainer =
+  document.querySelector(".product-detail__image");
+
+productImageContainer.innerHTML = `
+  <picture>
+    <source media="(min-width: 1200px)" srcset="${product.Images.PrimaryExtraLarge}" />
+    <source media="(min-width: 700px)" srcset="${product.Images.PrimaryLarge}" />
+    <img id="p-image" src="${product.Images.PrimaryMedium}" alt="${product.NameWithoutBrand}" />
+  </picture>
+`;
 
   const priceElement = document.getElementById("p-price");
   const originalPrice = product.SuggestedRetailPrice;
