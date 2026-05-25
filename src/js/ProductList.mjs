@@ -30,16 +30,16 @@ function productCardTemplate(product) {
 }
 
 export default class ProductList {
-  constructor(category, dataSource, listElement) {
+  constructor(category, searchQuery, dataSource, listElement) {
     this.category = category;
+    this.searchQuery = searchQuery;
     this.dataSource = dataSource;
     this.listElement = listElement;
     this.products = [];
   }
-  async init() {
-    const isSearch = window.location.search.includes("search=");
 
-    if (isSearch) {
+  async init() {
+    if (this.searchQuery) {
       const allCategories = ["tents", "backpacks", "sleeping-bags", "hammocks"];
       const allProducts = await Promise.all(
         allCategories.map((cat) => this.dataSource.getData(cat)),
@@ -48,13 +48,15 @@ export default class ProductList {
         .flat()
         .filter(
           (product) =>
-            product.Name.toLowerCase().includes(this.category.toLowerCase()) ||
+            product.NameWithoutBrand.toLowerCase().includes(
+              this.searchQuery.toLowerCase(),
+            ) ||
             product.Brand.Name.toLowerCase().includes(
-              this.category.toLowerCase(),
+              this.searchQuery.toLowerCase(),
             ),
         );
       document.querySelector(".title").textContent =
-        `Search Results: ${this.category}`;
+        `Search Results: ${this.searchQuery}`;
     } else {
       this.products = await this.dataSource.getData(this.category);
       document.querySelector(".title").textContent =
@@ -78,17 +80,14 @@ export default class ProductList {
           a.NameWithoutBrand.localeCompare(b.NameWithoutBrand),
         );
         break;
-
       case "name-desc":
         this.products.sort((a, b) =>
           b.NameWithoutBrand.localeCompare(a.NameWithoutBrand),
         );
         break;
-
       case "price-asc":
         this.products.sort((a, b) => a.FinalPrice - b.FinalPrice);
         break;
-
       case "price-desc":
         this.products.sort((a, b) => b.FinalPrice - a.FinalPrice);
         break;

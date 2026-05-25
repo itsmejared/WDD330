@@ -169,7 +169,7 @@ button {
   width: 50%;
   text-align: center;
 }
-/* Header */
+/* Search */
 .search-bar {
   display: flex;
   justify-content: center;
@@ -182,28 +182,47 @@ button {
   display: flex;
   align-items: center;
   width: 100%;
-  max-width: 250px;
+  max-width: 280px;
   position: relative;
 }
 
 #search-input {
   width: 100%;
-  padding: 8px 35px 8px 15px;
-  border: 1px solid var(--dark-grey);
-  border-radius: 20px;
-  font-size: 0.9rem;
+  padding: 0.65rem 2.8rem 0.65rem 1rem;
+  border: 1px solid var(--light-grey);
+  border-radius: 999px;
+  font-size: 0.95rem;
   outline: none;
   color: var(--dark-grey);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+#search-input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
 }
 
 #search-form button {
   position: absolute;
-  right: 10px;
+  right: 0.85rem;
   background: none;
   border: none;
-  font-size: 1rem;
+  padding: 0;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--dark-grey);
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+#search-form button:hover {
+  transform: scale(1.08);
+  opacity: 0.8;
 }
 
 /* Product Grid */
