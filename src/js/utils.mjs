@@ -77,3 +77,7 @@ export async function loadHeaderFooter(callback) {
   renderWithTemplate(headerTemplate, headerElement, null, callback,);
   renderWithTemplate(footerTemplate, footerElement);
 }
+
+export function getDiscountPercentage(originalPrice, finalPrice) {
+  return Math.round(((originalPrice - finalPrice) / originalPrice) * 100);
+}

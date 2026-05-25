@@ -1,4 +1,9 @@
-import { getLocalStorage, setLocalStorage } from "./utils.mjs";
+import {
+  getLocalStorage,
+  setLocalStorage,
+  getDiscountPercentage,
+} from "./utils.mjs";
+import { renderBreadcrumbs } from "./Breadcrumbs.mjs";
 
 export default class ProductDetails {
   constructor(productId, dataSource) {
@@ -9,6 +14,12 @@ export default class ProductDetails {
 
   async init() {
     this.product = await this.dataSource.findProductById(this.productId);
+    const breadcrumbContainer = document.querySelector(".breadcrumb-container");
+    renderBreadcrumbs(
+      breadcrumbContainer,
+      this.product.Category,
+      this.product.NameWithoutBrand,
+    );
     this.renderProductDetails();
     document
       .getElementById("add-to-cart")
@@ -16,8 +27,18 @@ export default class ProductDetails {
   }
 
   addProductToCart() {
-    const cartItems = getLocalStorage("so-cart") || [];
-    cartItems.push(this.product);
+    const cartItems = getLocalStorage("so-cart") ?? [];
+    const existingItem = cartItems.find(({ Id }) => Id === this.product.Id);
+
+    if (existingItem) {
+      existingItem.Quantity = (existingItem.Quantity ?? 0) + 1;
+    } else {
+      cartItems.push({
+        ...this.product,
+        Quantity: 1,
+      });
+    }
+
     setLocalStorage("so-cart", cartItems);
   }
 
@@ -32,22 +53,27 @@ function productDetailsTemplate(product) {
   document.querySelector("#p-brand").textContent = product.Brand.Name;
   document.querySelector("#p-name").textContent = product.NameWithoutBrand;
 
-  const productImage = document.querySelector("#p-image");
-  productImage.src = product.Images.PrimaryExtraLarge;
-  productImage.alt = product.NameWithoutBrand;
+  const productImageContainer =
+  document.querySelector(".product-detail__image");
+
+productImageContainer.innerHTML = `
+  <picture>
+    <source media="(min-width: 1200px)" srcset="${product.Images.PrimaryExtraLarge}" />
+    <source media="(min-width: 700px)" srcset="${product.Images.PrimaryLarge}" />
+    <img id="p-image" src="${product.Images.PrimaryMedium}" alt="${product.NameWithoutBrand}" />
+  </picture>
+`;
 
   const priceElement = document.getElementById("p-price");
   const originalPrice = product.SuggestedRetailPrice;
   const finalPrice = product.FinalPrice;
 
   if (finalPrice < originalPrice) {
-    const discountPercent = Math.round(
-      ((originalPrice - finalPrice) / originalPrice) * 100,
-    );
+    const discountPercent = getDiscountPercentage(originalPrice, finalPrice);
 
     priceElement.innerHTML = `<span class="original-price">$${originalPrice.toFixed(2)}</span>
     <span class="final-price">$${finalPrice.toFixed(2)}</span>
-    <span class="discount-badge">-${discountPercent}%</span>`;
+    <span class="discount-badge">-${discountPercent}% OFF</span>`;
   } else {
     priceElement.textContent = `$${finalPrice.toFixed(2)}`;
   }

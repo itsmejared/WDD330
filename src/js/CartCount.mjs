@@ -12,6 +12,9 @@ export function updateCartIcon() {
   const cartItems = getLocalStorage("so-cart") || [];
   const badge = document.createElement("span");
   badge.classList.add("cart-count");
-  badge.textContent = cartItems.length;
+
+  const totalCount = cartItems.reduce((sum, item) => sum + (item.Quantity || 1), 0);
+  badge.textContent = totalCount;
+
   cart.appendChild(badge);
 }
