@@ -398,7 +398,7 @@ button {
 /* Start cart list card styles */
 .cart-card {
   display: grid;
-  grid-template-columns: 80px 1fr 90px 40px;
+  grid-template-columns: 80px 1fr 140px 40px;
   column-gap: 1.25rem;
   row-gap: 0.5rem;
   align-items: center;
@@ -443,6 +443,58 @@ button {
 .cart-card__quantity {
   grid-row: 1;
   grid-column: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.01rem;
+}
+
+.cart-quantity-input {
+  width: 40px;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  background: transparent;
+  text-align: center;
+  font-size: 1rem;
+  padding: 0.25rem 0;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.cart-quantity-input::-webkit-inner-spin-button,
+.cart-quantity-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.cart-quantity-input:focus {
+  outline: none;
+  border-bottom-color: #444;
+}
+
+.quantity-btn {
+  border: none;
+  background: transparent;
+  color: #222;
+  padding: 0;
+  width: auto;
+  height: auto;
+  min-width: unset;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  flex: 0 0 auto;
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.quantity-btn:hover {
+  opacity: 0.6;
+}
+
+.quantity-btn:active {
+  transform: scale(0.9);
 }
 
 .cart-card__price {
@@ -494,9 +546,8 @@ button {
     grid-template-columns:
       160px
       minmax(420px, 1fr)
-      90px
+      140px
       40px;
-
     grid-template-rows: 60px 40px;
   }
 }
