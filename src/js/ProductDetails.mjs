@@ -1,4 +1,9 @@
-import { getLocalStorage, setLocalStorage } from "./utils.mjs";
+import {
+  getLocalStorage,
+  setLocalStorage,
+  getDiscountPercentage,
+} from "./utils.mjs";
+import { renderBreadcrumbs } from "./Breadcrumbs.mjs";
 
 export default class ProductDetails {
   constructor(productId, dataSource) {
@@ -9,6 +14,12 @@ export default class ProductDetails {
 
   async init() {
     this.product = await this.dataSource.findProductById(this.productId);
+    const breadcrumbContainer = document.querySelector(".breadcrumb-container");
+    renderBreadcrumbs(
+      breadcrumbContainer,
+      this.product.Category,
+      this.product.NameWithoutBrand,
+    );
     this.renderProductDetails();
     document
       .getElementById("add-to-cart")
@@ -55,7 +66,7 @@ function productDetailsTemplate(product) {
 
     priceElement.innerHTML = `<span class="original-price">$${originalPrice.toFixed(2)}</span>
     <span class="final-price">$${finalPrice.toFixed(2)}</span>
-    <span class="discount-badge">-${discountPercent}%</span>`;
+    <span class="discount-badge">-${discountPercent}% OFF</span>`;
   } else {
     priceElement.textContent = `$${finalPrice.toFixed(2)}`;
   }
@@ -65,8 +76,4 @@ function productDetailsTemplate(product) {
     product.DescriptionHtmlSimple;
 
   document.querySelector("#add-to-cart").dataset.id = product.Id;
-}
-
-function getDiscountPercentage(originalPrice, finalPrice) {
-  return Math.round(((originalPrice - finalPrice) / originalPrice) * 100);
 }

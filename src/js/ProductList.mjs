@@ -1,4 +1,5 @@
-import { renderListWithTemplate } from "./utils.mjs";
+import { renderListWithTemplate, getDiscountPercentage } from "./utils.mjs";
+import { renderBreadcrumbs } from "./Breadcrumbs.mjs";
 
 function productCardTemplate(product) {
   const originalPrice = product.SuggestedRetailPrice;
@@ -6,9 +7,7 @@ function productCardTemplate(product) {
   let priceHTML = `<p class="product-card__price">$${finalPrice.toFixed(2)}</p>`;
 
   if (finalPrice < originalPrice) {
-    const discountPercent = Math.round(
-      ((originalPrice - finalPrice) / originalPrice) * 100,
-    );
+    const discountPercent = getDiscountPercentage(originalPrice, finalPrice);
     priceHTML = `
       <p class="product-card__price">
         <span class="original-price">$${originalPrice.toFixed(2)}</span>
@@ -62,6 +61,15 @@ export default class ProductList {
       document.querySelector(".title").textContent =
         this.category.charAt(0).toUpperCase() + this.category.slice(1);
     }
+
+    const breadcrumbContainer = document.querySelector(".breadcrumb-container");
+
+    renderBreadcrumbs(
+      breadcrumbContainer,
+      this.category ?? this.searchQuery,
+      "",
+      this.products.length,
+    );
 
     const sortSelect = document.getElementById("sort-select");
     if (sortSelect) {
