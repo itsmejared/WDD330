@@ -51,9 +51,7 @@ function productDetailsTemplate(product) {
   const finalPrice = product.FinalPrice;
 
   if (finalPrice < originalPrice) {
-    const discountPercent = Math.round(
-      ((originalPrice - finalPrice) / originalPrice) * 100,
-    );
+    const discountPercent = getDiscountPercentage(originalPrice, finalPrice);
 
     priceElement.innerHTML = `<span class="original-price">$${originalPrice.toFixed(2)}</span>
     <span class="final-price">$${finalPrice.toFixed(2)}</span>
@@ -67,4 +65,8 @@ function productDetailsTemplate(product) {
     product.DescriptionHtmlSimple;
 
   document.querySelector("#add-to-cart").dataset.id = product.Id;
+}
+
+function getDiscountPercentage(originalPrice, finalPrice) {
+  return Math.round(((originalPrice - finalPrice) / originalPrice) * 100);
 }
