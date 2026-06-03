@@ -1,12 +1,20 @@
 import { loadHeaderFooter } from "./utils.mjs";
 import { updateCartIcon } from "./CartCount.mjs";
+import ExternalServices from "./ExternalServices.mjs";
 import CheckoutProcess from "./CheckoutProcess.mjs";
 
 loadHeaderFooter(updateCartIcon);
-const checkoutProcess = new CheckoutProcess(".order-summary");
+const services = new ExternalServices();
+const checkoutProcess = new CheckoutProcess(services, ".order-summary");
 checkoutProcess.init();
 
 const zipInput = document.querySelector("#zip");
 zipInput.addEventListener("blur", () => {
   checkoutProcess.calculateOrderTotal();
+});
+
+const form = document.querySelector("#checkout-form");
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  await checkoutProcess.checkout(form);
 });

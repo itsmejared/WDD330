@@ -1,15 +1,16 @@
-import { getLocalStorage, setLocalStorage } from "./utils.mjs";
+import { getLocalStorage } from "./utils.mjs";
 
 const CART_KEY = "so-cart";
 
 export default class CheckoutProcess {
-  constructor(outputSelector) {
+  constructor(services, outputSelector) {
     this.cartItems = getLocalStorage(CART_KEY) || [];
+    this.services = services;
     this.outputSelector = outputSelector;
     this.itemSubTotal = 0;
     this.shipping = 0;
-    this.tax = 0;
-    this.orderTotal = 0;
+    this.tax = "0";
+    this.orderTotal = "0";
   }
 
   init() {
@@ -33,9 +34,13 @@ export default class CheckoutProcess {
       0,
     );
 
-    this.tax = this.itemSubTotal * 0.06;
+    this.tax = (this.itemSubTotal * 0.06).toFixed(2);
     this.shipping = itemCount > 0 ? 10 + (itemCount - 1) * 2 : 0;
-    this.orderTotal = this.itemSubTotal + this.tax + this.shipping;
+    this.orderTotal = (
+      this.itemSubTotal +
+      Number(this.tax) +
+      this.shipping
+    ).toFixed(2);
 
     // display the totals.
     this.displayOrderTotals();
@@ -44,12 +49,51 @@ export default class CheckoutProcess {
   displayOrderTotals() {
     // once the totals are all calculated display them in the order summary page
     document.querySelector(`${this.outputSelector} #tax`).textContent =
-      `$${this.tax.toFixed(2)}`;
+      `$${this.tax}`;
 
     document.querySelector(`${this.outputSelector} #shipping`).textContent =
       `$${this.shipping.toFixed(2)}`;
 
     document.querySelector(`${this.outputSelector} #orderTotal`).textContent =
-      `$${this.orderTotal.toFixed(2)}`;
+      `$${this.orderTotal}`;
+  }
+
+  packageItems() {
+    return this.cartItems.map((item) => ({
+      id: item.Id,
+      name: item.Name,
+      price: item.FinalPrice,
+      quantity: item.Quantity || 1,
+    }));
+  }
+
+  async checkout(form) {
+    const order = this.formDataToJSON(form);
+
+    Object.assign(order, {
+      orderDate: new Date().toISOString(),
+      items: this.packageItems(),
+      shipping: this.shipping,
+      tax: this.tax,
+      orderTotal: this.orderTotal,
+    });
+
+     try {
+      const response = await this.services.checkout(order);
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  formDataToJSON(formElement) {
+    const formData = new FormData(formElement);
+    const convertedJSON = {};
+
+    formData.forEach((value, key) => {
+      convertedJSON[key] = value;
+    });
+
+    return convertedJSON;
   }
 }
