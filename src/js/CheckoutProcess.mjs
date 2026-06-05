@@ -1,4 +1,9 @@
-import { getLocalStorage } from "./utils.mjs";
+import {
+  getLocalStorage,
+  setLocalStorage,
+  alertMessage,
+  removeAllAlerts,
+} from "./utils.mjs";
 
 const CART_KEY = "so-cart";
 
@@ -78,10 +83,16 @@ export default class CheckoutProcess {
       orderTotal: this.orderTotal,
     });
 
-     try {
+    try {
       const response = await this.services.checkout(order);
       console.log(response);
+      setLocalStorage(CART_KEY, []);
+      location.assign("/checkout/success.html");
     } catch (err) {
+      removeAllAlerts();
+      for (let message in err.message) {
+        alertMessage(err.message[message]);
+      }
       console.log(err);
     }
   }

@@ -16,5 +16,9 @@ zipInput.addEventListener("blur", () => {
 const form = document.querySelector("#checkout-form");
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
+  }
   await checkoutProcess.checkout(form);
 });
