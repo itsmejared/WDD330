@@ -235,6 +235,42 @@ button {
   object-fit: contain;
 }
 
+/* Product Colors */
+
+.color-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.color-chip {
+  width: 60px;
+  height: 40px;
+  object-fit: contain;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  background: white;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.color-chip:hover {
+  transform: scale(1.05);
+}
+
+.color-chip.active {
+  border: 3px solid var(--primary-color);
+}
+
+.selected-color {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
 /* Checkout */
 .checkout-btn {
   display: inline-flex;

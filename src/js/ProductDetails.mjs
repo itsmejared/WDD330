@@ -141,6 +141,45 @@ function renderCarousel(product) {
   });
 }
 
+function renderColors(product) {
+  const colorContainer = document.querySelector("#p-color");
+
+  if (!product.Colors?.length) return;
+
+  colorContainer.innerHTML = `
+  <p class="selected-color">
+    Color: ${product.Colors[0].ColorName}
+  </p>
+
+  <div class="color-selector">
+    ${product.Colors.map(
+      (color, index) => `
+          <img
+            src="${color.ColorChipImageSrc}"
+            class="color-chip ${index === 0 ? "active" : ""}"
+            data-color-name="${color.ColorName}"
+            alt="${color.ColorName}"
+            title="${color.ColorName}"
+          />
+        `,
+    ).join("")}
+  </div>
+`;
+
+  const chips = document.querySelectorAll(".color-chip");
+  const selectedColor = document.querySelector(".selected-color");
+
+  chips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      chips.forEach((c) => c.classList.remove("active"));
+
+      chip.classList.add("active");
+
+      selectedColor.textContent = `Color: ${chip.dataset.colorName}`;
+    });
+  });
+}
+
 function productDetailsTemplate(product) {
   document.querySelector("h2").textContent =
     product.Category.charAt(0).toUpperCase() + product.Category.slice(1);
@@ -176,7 +215,7 @@ function productDetailsTemplate(product) {
     priceElement.textContent = `$${finalPrice.toFixed(2)}`;
   }
 
-  document.querySelector("#p-color").textContent = product.Colors[0].ColorName;
+  renderColors(product);
 
   document.querySelector("#p-description").innerHTML =
     product.DescriptionHtmlSimple;
