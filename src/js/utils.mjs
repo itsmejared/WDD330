@@ -77,6 +77,7 @@ export async function loadHeaderFooter(callback) {
 
   renderWithTemplate(headerTemplate, headerElement, null, callback);
   renderWithTemplate(footerTemplate, footerElement);
+  loadNewsletter();
 }
 
 export function getDiscountPercentage(originalPrice, finalPrice) {
@@ -101,4 +102,33 @@ export function alertMessage(message, scroll = true) {
 export function removeAllAlerts() {
   const alerts = document.querySelectorAll(".alert");
   alerts.forEach((alert) => document.querySelector("main").removeChild(alert));
+}
+
+export function loadNewsletter() {
+  const newsletter = document.querySelector(".newsletter");
+  if (!newsletter) return;
+  const savedEmail = getLocalStorage("newsletter-email");
+  if (savedEmail) {
+    newsletter.innerHTML = newsletterMessage(savedEmail);
+    return;
+  }
+
+  const form = document.querySelector("#newsletter-form");
+  if (!form) return;
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const email = document.querySelector("#newsletter-email").value;
+    setLocalStorage("newsletter-email", email);
+    newsletter.innerHTML = newsletterMessage(email);
+  });
+}
+
+export function newsletterMessage(email){
+  return `
+      <div class="newsletter-success">
+        <h3>🎉 You're subscribed!</h3>
+        <p>We'll keep you updated with new gear, promotions, and outdoor tips.</p>
+        <p class="newsletter-email">${email}</p>
+      </div>
+    `;
 }
