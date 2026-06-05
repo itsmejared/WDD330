@@ -61,10 +61,7 @@ export default class Cart {
   }
 
   renderCartTotal() {
-    const total = this.cartItems.reduce((sum, item) => {
-      return sum + item.FinalPrice * (item.Quantity ?? 1);
-    }, 0);
-    this.cartFooter.classList.remove("hide");
+    const total = this.getCartTotal();
     this.cartTotal.textContent = `Total: $${total.toFixed(2)}`;
   }
 
@@ -85,7 +82,10 @@ export default class Cart {
         this.updateQuantity(productId, item.Quantity + 1);
       }
 
-      if (event.target.classList.contains("decrease-btn") &&  item.Quantity > 1) {
+      if (
+        event.target.classList.contains("decrease-btn") &&
+        item.Quantity > 1
+      ) {
         this.updateQuantity(productId, item.Quantity - 1);
       }
     });
@@ -107,6 +107,13 @@ export default class Cart {
     return this.cartItems.find((item) => item.Id === productId);
   }
 
+  getCartTotal() {
+    return this.cartItems.reduce(
+      (sum, item) => sum + item.FinalPrice * (item.Quantity ?? 1),
+      0,
+    );
+  }
+
   saveCart() {
     setLocalStorage(CART_KEY, this.cartItems);
     updateCartIcon();
@@ -114,14 +121,14 @@ export default class Cart {
 
   updateQuantity(productId, newQuantity) {
     const item = this.findCartItem(productId);
-    if (item) {
-      item.Quantity = newQuantity;
-      this.saveCart();
-      this.renderCartTotal();
-      const input = document.querySelector(`#qty-${productId}`);
-      if (input) {
-        input.value = newQuantity;
-      }
+    if (!item) return;
+
+    item.Quantity = newQuantity;
+    this.saveCart();
+    this.renderCartTotal();
+    const input = document.querySelector(`#qty-${productId}`);
+    if (input) {
+      input.value = newQuantity;
     }
   }
 
