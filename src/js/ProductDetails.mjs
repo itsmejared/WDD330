@@ -50,39 +50,134 @@ export default class ProductDetails {
   }
 }
 
-function productDetailsTemplate(product) {
-  document.querySelector("h2").textContent =
-    product.Category.charAt(0).toUpperCase() + product.Category.slice(1);
-  document.querySelector("#p-brand").textContent = product.Brand.Name;
-  document.querySelector("#p-name").textContent = product.NameWithoutBrand;
+function initializeCarousel(images) {
+  if (images.length <= 1) return;
 
+  let currentIndex = 0;
+
+  const mainImage = document.querySelector("#p-image");
+  const prevBtn = document.querySelector(".carousel-btn.prev");
+  const nextBtn = document.querySelector(".carousel-btn.next");
+  const thumbnails = document.querySelectorAll(".carousel-thumbnail");
+
+  function updateCarousel(index) {
+    currentIndex = index;
+
+    mainImage.src = images[currentIndex];
+
+    thumbnails.forEach((thumb) => {
+      thumb.classList.remove("active");
+    });
+
+    thumbnails[currentIndex].classList.add("active");
+  }
+
+  prevBtn.addEventListener("click", () => {
+    updateCarousel(currentIndex === 0 ? images.length - 1 : currentIndex - 1);
+  });
+
+  nextBtn.addEventListener("click", () => {
+    updateCarousel(currentIndex === images.length - 1 ? 0 : currentIndex + 1);
+  });
+
+  thumbnails.forEach((thumb) => {
+    thumb.addEventListener("click", () => {
+      updateCarousel(Number(thumb.dataset.index));
+    });
+  });
+}
+
+function renderCarousel(product) {
   const productImageContainer = document.querySelector(
     ".product-detail__image",
   );
 
+  const images = [
+    product.Images.PrimaryExtraLarge,
+    ...(product.Images.ExtraImages?.map((img) => img.Src) ?? []),
+  ];
+
   productImageContainer.innerHTML = `
-  <picture>
-    <source media="(min-width: 1200px)" srcset="${product.Images.PrimaryExtraLarge}" />
-    <source media="(min-width: 700px)" srcset="${product.Images.PrimaryLarge}" />
-    <img id="p-image" src="${product.Images.PrimaryMedium}" alt="${product.NameWithoutBrand}" />
-  </picture>
-`;
+    <div class="carousel-layout">
+      <div class="carousel-thumbnails">
+        ${images
+          .map(
+            (img, index) => `
+              <img
+                src="${img}"
+                class="carousel-thumbnail ${index === 0 ? "active" : ""}"
+                data-index="${index}"
+                alt="Product image ${index + 1}"
+              />
+            `,
+          )
+          .join("")}
+      </div>
+
+      <div class="carousel-main">
+        <img
+          id="p-image"
+          class="carousel-image"
+          src="${images[0]}"
+          alt="${product.NameWithoutBrand}"
+        />
+      </div>
+    </div>
+  `;
+
+  const mainImage = document.querySelector("#p-image");
+  const thumbnails = document.querySelectorAll(".carousel-thumbnail");
+
+  thumbnails.forEach((thumb) => {
+    thumb.addEventListener("click", () => {
+      mainImage.src = thumb.src;
+
+      thumbnails.forEach((img) => {
+        img.classList.remove("active");
+      });
+
+      thumb.classList.add("active");
+    });
+  });
+}
+
+function productDetailsTemplate(product) {
+  document.querySelector("h2").textContent =
+    product.Category.charAt(0).toUpperCase() + product.Category.slice(1);
+
+  document.querySelector("#p-brand").textContent = product.Brand.Name;
+
+  document.querySelector("#p-name").textContent = product.NameWithoutBrand;
+
+  renderCarousel(product);
 
   const priceElement = document.getElementById("p-price");
+
   const originalPrice = product.SuggestedRetailPrice;
   const finalPrice = product.FinalPrice;
 
   if (finalPrice < originalPrice) {
     const discountPercent = getDiscountPercentage(originalPrice, finalPrice);
 
-    priceElement.innerHTML = `<span class="original-price">$${originalPrice.toFixed(2)}</span>
-    <span class="final-price">$${finalPrice.toFixed(2)}</span>
-    <span class="discount-badge">-${discountPercent}% OFF</span>`;
+    priceElement.innerHTML = `
+      <span class="original-price">
+        $${originalPrice.toFixed(2)}
+      </span>
+
+      <span class="final-price">
+        $${finalPrice.toFixed(2)}
+      </span>
+
+      <span class="discount-badge">
+        -${discountPercent}% OFF
+      </span>
+    `;
   } else {
     priceElement.textContent = `$${finalPrice.toFixed(2)}`;
   }
 
   document.querySelector("#p-color").textContent = product.Colors[0].ColorName;
+
   document.querySelector("#p-description").innerHTML =
     product.DescriptionHtmlSimple;
 

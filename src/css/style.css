@@ -194,6 +194,47 @@ button {
   color: var(--tertiary-color);
 }
 
+/* Product Carousel */
+
+.carousel-layout {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.carousel-thumbnails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.carousel-thumbnail {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  background: white;
+}
+
+.carousel-thumbnail.active {
+  border-color: var(--primary-color);
+}
+
+.carousel-main {
+  display: flex;
+  justify-content: center;
+}
+
+.carousel-image {
+  width: 100%;
+  max-width: 500px;
+  max-height: 500px;
+  object-fit: contain;
+}
+
 /* Checkout */
 .checkout-btn {
   display: inline-flex;
