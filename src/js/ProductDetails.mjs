@@ -3,6 +3,7 @@ import {
   setLocalStorage,
   getDiscountPercentage,
 } from "./utils.mjs";
+import { updateCartIcon, animateCartIcon } from "./CartCount.mjs";
 import { renderBreadcrumbs } from "./Breadcrumbs.mjs";
 
 export default class ProductDetails {
@@ -40,6 +41,8 @@ export default class ProductDetails {
     }
 
     setLocalStorage("so-cart", cartItems);
+    updateCartIcon();
+    animateCartIcon();
   }
 
   renderProductDetails() {
@@ -53,10 +56,11 @@ function productDetailsTemplate(product) {
   document.querySelector("#p-brand").textContent = product.Brand.Name;
   document.querySelector("#p-name").textContent = product.NameWithoutBrand;
 
-  const productImageContainer =
-  document.querySelector(".product-detail__image");
+  const productImageContainer = document.querySelector(
+    ".product-detail__image",
+  );
 
-productImageContainer.innerHTML = `
+  productImageContainer.innerHTML = `
   <picture>
     <source media="(min-width: 1200px)" srcset="${product.Images.PrimaryExtraLarge}" />
     <source media="(min-width: 700px)" srcset="${product.Images.PrimaryLarge}" />
